@@ -9,19 +9,19 @@ columns = [['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']]
 diagonals = [['0', '0', '0'], ['0', '0', '0']]
 
 
-def player_win(player):
+def player_win(current):
     over = False
     for i in range(3):
-        if rows[i].count(player) == 3:
+        if rows[i].count(current) == 3:
             over = True
             break
 
-        if columns[i].count(player) == 3:
+        if columns[i].count(current) == 3:
             over = True
             break
 
         if i < 2:
-            if diagonals[i].count(player) == 3:
+            if diagonals[i].count(current) == 3:
                 over = True
                 break
 
@@ -32,40 +32,40 @@ def player_win(player):
 
 
 def check():
-    win_X = []
-    win_O = []
+    x = []
+    o = []
     for i in range(3):
         if rows[i].count('0') == 1:
-            index_zero = rows[i].index('0')
-            index_zero = 3 * i + index_zero
+            index = rows[i].index('0')
+            index = 3 * i + index
             if rows[i].count('X') == 2:
-                win_X.append(index_zero)
+                x.append(index)
             elif rows[i].count('O') == 2:
-                win_O.append(index_zero)
+                o.append(index)
 
         if columns[i].count('0') == 1:
-            index_zero = columns[i].index('0')
-            index_zero = i + (index_zero * 3)
+            index = columns[i].index('0')
+            index = i + (index * 3)
             if columns[i].count('X') == 2:
-                win_X.append(index_zero)
+                x.append(index)
             elif columns[i].count('O') == 2:
-                win_O.append(index_zero)
+                o.append(index)
         if i < 2:
             if diagonals[i].count('0') == 1:
-                index_zero = diagonals[i].index('0')
+                index = diagonals[i].index('0')
                 if i == 0:
-                    index_zero = 4 * index_zero
+                    index = 4 * index
                 elif i == 1:
-                    index_zero = 2 + (index_zero * 2)
+                    index = 2 + (index * 2)
                 if diagonals[i].count('X') == 2:
-                    win_X.append(index_zero)
+                    x.append(index)
                 elif diagonals[i].count('O') == 2:
-                    win_O.append(index_zero)
+                    o.append(index)
 
-    return [win_O, win_X]
+    return [o, x]
 
 
-def cal_heuristic(turn):
+def calculate_heuristic(turn):
     available = []
     for i in range(9):
         if board[i] == '0':
@@ -75,8 +75,8 @@ def cal_heuristic(turn):
     heuristic_values_choices = []
 
     for possible in available:
-        X_combo = 0
-        O_combo = 0
+        x1 = 0
+        o = 0
 
         x = possible // 3
         y = possible % 3
@@ -91,108 +91,108 @@ def cal_heuristic(turn):
             z = possible // 2 - 1
             diagonals[1][z] = turn
 
-        empty_minus_one = len(available) - 1
+        remaining = len(available) - 1
 
         for i in range(3):
             if rows[i].count('0') == 3:
-                if (empty_minus_one == 5):
+                if (remaining == 5):
                     if turn == 'O':
-                        X_combo = X_combo + 1
+                        x1 = x1 + 1
                     else:
-                        O_combo = O_combo + 1
+                        o = o + 1
             elif rows[i].count('0') == 2:
-                if empty_minus_one > 3:
+                if remaining > 3:
                     if rows[i].count('X') == 1:
-                        X_combo = X_combo + 1
+                        x1 = x1 + 1
                     elif rows[i].count('O') == 1:
-                        O_combo = O_combo + 1
-                elif empty_minus_one == 3:
+                        o = o + 1
+                elif remaining == 3:
                     if rows[i].count('X') == 1:
                         if turn == 'O':
-                            X_combo = X_combo + 1
+                            x1 = x1 + 1
                     elif rows[i].count('O') == 1:
                         if turn == 'X':
-                            O_combo = O_combo + 1
+                            o = o + 1
             elif rows[i].count('0') == 1:
-                if empty_minus_one > 1:
+                if remaining > 1:
                     if rows[i].count('X') == 2:
-                        X_combo = X_combo + 1
+                        x1 = x1 + 1
                     elif rows[i].count('O') == 2:
-                        O_combo = O_combo + 1
-                elif empty_minus_one == 1:
+                        o = o + 1
+                elif remaining == 1:
                     if rows[i].count('X') == 2:
                         if turn == 'O':
-                            X_combo = X_combo + 1
+                            x1 = x1 + 1
                     elif rows[i].count('O') == 2:
                         if turn == 'X':
-                            O_combo = O_combo + 1
+                            o = o + 1
 
             if columns[i].count('0') == 3:
-                if (empty_minus_one == 5):
+                if remaining == 5:
                     if turn == 'O':
-                        X_combo = X_combo + 1
+                        x1 = x1 + 1
                     else:
-                        O_combo = O_combo + 1
+                        o = o + 1
             elif columns[i].count('0') == 2:
-                if empty_minus_one > 3:
+                if remaining > 3:
                     if columns[i].count('X') == 1:
-                        X_combo = X_combo + 1
+                        x1 = x1 + 1
                     else:
-                        O_combo = O_combo + 1
-                elif empty_minus_one == 3:
+                        o = o + 1
+                elif remaining == 3:
                     if columns[i].count('X') == 1:
                         if turn == 'O':
-                            X_combo = X_combo + 1
+                            x1 = x1 + 1
                     elif columns[i].count('O') == 1:
                         if turn == 'X':
-                            O_combo = O_combo + 1
+                            o = o + 1
             elif columns[i].count('0') == 1:
-                if empty_minus_one > 1:
+                if remaining > 1:
                     if columns[i].count('X') == 2:
-                        X_combo = X_combo + 1
+                        x1 = x1 + 1
                     elif columns[i].count('O') == 2:
-                        O_combo = O_combo + 1
-                elif empty_minus_one == 1:
+                        o = o + 1
+                elif remaining == 1:
                     if columns[i].count('X') == 2:
                         if turn == 'O':
-                            X_combo = X_combo + 1
+                            x1 = x1 + 1
                     elif columns[i].count('O') == 2:
                         if turn == 'X':
-                            O_combo = O_combo + 1
+                            o = o + 1
 
             if i < 2:
                 if diagonals[i].count('0') == 3:
-                    if (empty_minus_one == 5):
+                    if remaining == 5:
                         if turn == 'O':
-                            X_combo = X_combo + 1
+                            x1 = x1 + 1
                         else:
-                            O_combo = O_combo + 1
+                            o = o + 1
                 elif diagonals[i].count('0') == 2:
-                    if empty_minus_one > 3:
+                    if remaining > 3:
                         if diagonals[i].count('X') == 1:
-                            X_combo = X_combo + 1
+                            x1 = x1 + 1
                         else:
-                            O_combo = O_combo + 1
-                    elif empty_minus_one == 3:
+                            o = o + 1
+                    elif remaining == 3:
                         if diagonals[i].count('X') == 1:
                             if turn == 'O':
-                                X_combo = X_combo + 1
+                                x1 = x1 + 1
                         elif diagonals[i].count('O') == 1:
                             if turn == 'X':
-                                O_combo = O_combo + 1
+                                o = o + 1
                 elif diagonals[i].count('0') == 1:
-                    if empty_minus_one > 1:
+                    if remaining > 1:
                         if diagonals[i].count('X') == 2:
-                            X_combo = X_combo + 1
+                            x1 = x1 + 1
                         elif columns[i].count('O') == 2:
-                            O_combo = O_combo + 1
-                    elif empty_minus_one == 1:
+                            o = o + 1
+                    elif remaining == 1:
                         if diagonals[i].count('X') == 2:
                             if turn == 'O':
-                                X_combo = X_combo + 1
+                                x1 = x1 + 1
                         elif diagonals[i].count('O') == 2:
                             if turn == 'X':
-                                O_combo = O_combo + 1
+                                o = o + 1
         board[possible] = '0'
         rows[x][y] = '0'
         columns[y][x] = '0'
@@ -205,9 +205,9 @@ def cal_heuristic(turn):
             diagonals[1][z] = '0'
 
         if turn == 'X':
-            heuristic_values.append(X_combo - O_combo)
+            heuristic_values.append(x1 - o)
         else:
-            heuristic_values.append(O_combo - X_combo)
+            heuristic_values.append(o - x1)
 
         heuristic_values_choices.append(possible)
 
@@ -223,18 +223,18 @@ def cal_heuristic(turn):
     final_positions = []
     min_values = []
 
-    for choice in final_heuristics:
-        x = choice // 3
-        y = choice % 3
-        board[choice] = turn
+    for possible in final_heuristics:
+        x = possible // 3
+        y = possible % 3
+        board[possible] = turn
         rows[x][y] = turn
         columns[y][x] = turn
         if x == y:
             diagonals[0][x] = turn
             if x == 1:
                 diagonals[1][x] = turn
-        if choice == 2 or choice == 6:
-            z = choice // 2 - 1
+        if possible == 2 or possible == 6:
+            z = possible // 2 - 1
             diagonals[1][z] = turn
 
         checks = check()
@@ -243,15 +243,15 @@ def cal_heuristic(turn):
         else:
             min_values.append(len(checks[1]))
 
-        board[choice] = '0'
+        board[possible] = '0'
         rows[x][y] = '0'
         columns[y][x] = '0'
         if x == y:
             diagonals[0][x] = '0'
             if x == 1:
                 diagonals[1][x] = '0'
-        if choice == 2 or choice == 6:
-            z = choice // 2 - 1
+        if possible == 2 or possible == 6:
+            z = possible // 2 - 1
             diagonals[1][z] = '0'
 
     min_val = min(min_values)
@@ -305,7 +305,7 @@ def main():
                             choice = my_win[0][0]
 
                 if choice == -1:
-                    choice = cal_heuristic(turn)
+                    choice = calculate_heuristic(turn)
 
         n.remove(choice)
         if turn == 'O':
