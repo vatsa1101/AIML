@@ -1,0 +1,48 @@
+<div class="notebook">
+
+<div class="nb-cell program" name="p1">
+parent(ratan, vinod).
+parent(ratan, jyoti).
+parent(ratan, lata).
+parent(mulji, vinod).
+parent(mulji, jyoti).
+parent(mulji, lata).
+parent(vinod, vatsa).
+parent(sejal, vatsa).
+parent(vinod, rishi).
+parent(sejal, rishi).
+
+female(ratan).
+female(jyoti).
+female(sejal).
+female(lata).
+male(vatsa).
+male(vinod).
+male(mulji).
+male(rishi).
+
+mother(X, Y):- parent(X, Y), female(X).
+father(X, Y):- parent(X, Y), male(X).
+
+son(X, Y):- parent(Y, X), male(X).
+daughter(X, Y):- parent(Y, X), female(X).
+
+grandfather(X, Y):- parent(X, A), parent(A, Y), male(X).
+grandmother(X, Y):- parent(X, A), parent(A, Y), female(X).
+
+sister(X, Y):- parent(A, X), parent(A, Y), female(X), X \= Y.
+brother(X, Y):- parent(A, X), parent(A, Y), male(X), X \= Y.
+
+aunt(X, Y):- sister(X, Z), parent(Z, Y).
+uncle(X, Y):- brother(X, Z), parent(Z, Y).
+
+predecessor(X, Y) :- parent(X, Y).
+predecessor(X, Y) :- parent(X, A),predecessor(A, Y).
+
+successor(X, Y):- son(Y, X).
+successor(X, Y):- daughter(Y, X).
+successor(X, Y):- son(A, X),successor(A, Y).
+successor(X, Y):- daughter(A, X),successor(A, Y).
+</div>
+
+</div>
